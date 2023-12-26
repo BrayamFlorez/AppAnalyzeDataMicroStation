@@ -49,7 +49,6 @@ def get_data_by_city():
         else:
             messagebox.showwarning("Advertencia", "Por favor, ingresa un código postal válido")
 
-        # Ocultar barra de progreso
         progress_bar.stop()
 
     top = tk.Toplevel(root)
@@ -144,55 +143,60 @@ def create_map(df, stats_info):
     mapa.save(file_path)
     messagebox.showinfo("Éxito", f"Gráfico generado correctamente. Archivo guardado en: {file_path}")
 
-    # Ocultar barra de progreso
     progress_bar.stop()
 
 root = tk.Tk()
 root.title("Visualización de Datos")
-root.geometry("300x500")
-root.configure(bg="#E8E8E8")
-
-
+root.geometry("300x550")
+root.configure(bg="#b2f1ff")
 
 # Cargar la imagen y redimensionarla con OpenCV
 image_path = "resources/imagen.jpg"  # Ruta de la imagen
 img = cv2.imread(image_path)
 img = cv2.resize(img, (200, 200), interpolation=cv2.INTER_AREA)  # Redimensionar la imagen con cv2.resize()
 
-# Convertir la imagen de OpenCV a un objeto PhotoImage de tkinter
-img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)  # Convertir BGR a RGB
-img = Image.fromarray(img)  # Convertir a formato Image de PIL
-img = ImageTk.PhotoImage(image=img)  # Convertir a PhotoImage de tkinter
+img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+img = Image.fromarray(img)
+img = ImageTk.PhotoImage(image=img)
 
-# Mostrar la imagen en un widget Label
-label_img = tk.Label(root, image=img, bg="#E8E8E8")
+
+label_img = tk.Label(root, image=img)
 label_img.pack(pady=10)
 
-label = tk.Label(root, text="Antes de realizar las busquedas,\nselecciona la variable que deseas analizar", bg="#E8E8E8")
+label = tk.Label(root, text="Antes de realizar las busquedas,\nselecciona la variable que deseas analizar", bg="#b2f1ff")
 label.pack(pady=10)
 
-# Combo box para seleccionar la columna
-measurements = ["Temperature1", "Temperature2", "Pressure", "Speed", "Humidity"]
+def habilitar_botones(event):
+    selected_option = combo_measurements.get()
+    if selected_option != "Seleccione la columna que desea analizar":
+        button_descargar.config(state=tk.NORMAL)
+        button_total.config(state=tk.NORMAL)
+        button_city.config(state=tk.NORMAL)
+    else:
+        button_descargar.config(state=tk.DISABLED)
+        button_total.config(state=tk.DISABLED)
+        button_city.config(state=tk.DISABLED)
+
+
+measurements = ["Seleccione la columna que desea analizar", "Temperature1", "Temperature2", "Pressure", "Speed", "Humidity"]
+
 combo_measurements = ttk.Combobox(root, values=measurements)
 combo_measurements.pack(pady=5)
-combo_measurements.set("Seleccione la columna que desea analizar")
+combo_measurements.set("Selecciona")
+combo_measurements.bind("<<ComboboxSelected>>", habilitar_botones)
 
-label = tk.Label(root, text="Seleccione una opción:", bg="#E8E8E8")
+label = tk.Label(root, text="Seleccione una opción:", bg="#b2f1ff")
 label.pack(pady=10)
 
-
-button_descargar = tk.Button(root, text="Descargar datos por ciudad", command=descargar_datos, bg="#4AE046", fg="white")
+button_descargar = tk.Button(root, text="Descargar datos por ciudad", command=descargar_datos, bg="#4AE046", fg="black", relief="raised", borderwidth=5, state=tk.DISABLED)
 button_descargar.pack(pady=5)
 
-button_total = tk.Button(root, text="Analizar datos totales", command=get_total_data, bg="#4672E0", fg="white")
+button_total = tk.Button(root, text="Analizar datos totales", command=get_total_data, bg="#4672E0", fg="black", relief="raised", borderwidth=5, state=tk.DISABLED)
 button_total.pack(pady=5)
 
-button_city = tk.Button(root, text="Analizar datos por ciudad", command=get_data_by_city, bg="#46E0D9", fg="white")
+button_city = tk.Button(root, text="Analizar datos por ciudad", command=get_data_by_city, bg="#46E0D9", fg="black", relief="raised", borderwidth=5, state=tk.DISABLED)
 button_city.pack(pady=5)
 
-
-
-# Barra de progreso
 progress_bar = ttk.Progressbar(root, orient="horizontal", length=200, mode="indeterminate")
 progress_bar.pack(pady=5)
 
