@@ -152,16 +152,13 @@ root.configure(bg="#b2f1ff")
 
 # Cargar la imagen y redimensionarla con OpenCV
 image_path = "resources/imagen.jpg"  # Ruta de la imagen
-img = cv2.imread(image_path)
-img = cv2.resize(img, (200, 200), interpolation=cv2.INTER_AREA)  # Redimensionar la imagen con cv2.resize()
+img = Image.open(image_path)
+# Convertir la imagen de PIL a un formato compatible con Tkinter
+img_tk = ImageTk.PhotoImage(img)
 
-img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
-img = Image.fromarray(img)
-img = ImageTk.PhotoImage(image=img)
-
-
-label_img = tk.Label(root, image=img)
-label_img.pack(pady=10)
+# Mostrar la imagen en un widget Label de Tkinter
+label_img = tk.Label(root, image=img_tk)
+label_img.pack(padx=10, pady=10)
 
 label = tk.Label(root, text="Antes de realizar las busquedas,\nselecciona la variable que deseas analizar", bg="#b2f1ff")
 label.pack(pady=10)
